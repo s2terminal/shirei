@@ -9,15 +9,18 @@ description: Herdr上の別のエージェントセッションに指示を送�
 
 ## 他エージェントへの指示配送手順
 
-1. `herdr agent list` で対象を探す。ターゲット指定には `pane_id` かユニークなagent名だけを使う。`agent` フィールド(kind、例: `codex`)をそのまま `agent prompt` 等のターゲットに渡すと `agent_not_found` になる(実際に確認済み)。
-2. `herdr agent prompt <pane_id> "<指示>" --wait --timeout <N>` で送信する。この呼び出し自体が `timeout` エラーを返しても、指示は届いて実行が始まっていることがある(実際に発生した)。`timeout` エラーを「失敗」と即断しない。
-3. 必要なら `herdr agent wait <pane_id> --until idle --timeout <M>` で追加で待つ。この `agent wait` 呼び出しも `timeout` を返すことがある(実際に発生した)。
-4. 完了判定は常に `herdr agent get <pane_id>` が返す `agent_status`(`idle` または `done`)を正とする。`agent prompt` や `agent wait` のタイムアウトエラーではなく、この `agent_status` の値だけを信頼する。
-5. `herdr agent read <pane_id> --source recent-unwrapped --lines 300` で出力を回収し、ターミナルの生ログからユーザーへの回答部分だけを抜粋して提示する。
-6. ファイル共有フォールバックは使わない。指示先エージェントは別コンテナで動いている可能性があるため、`herdr` スキルに記載されている「一時ディレクトリにMarkdownを書かせて読み返す」手法はこのリポジトリでは使わない。出力が途切れている場合は次のいずれかで対応する。
+対象ごとの呼び出しを独立したバックグラウンド処理にすることで、複数対象への並行配送が自然に成立する。
+
+1. `herdr agent list` で対象の `pane_id` を洗い出す。ターゲット指定には `pane_id` かユニークなagent名だけを使う。`agent` フィールド(kind、例: `codex`)をそのまま `agent prompt` 等のターゲットに渡すと `agent_not_found` になる(実際に確認済み)。
+2. 対象ごとに `herdr agent prompt <pane_id> "<指示>" --wait --timeout <N>` を、Bashツールの `run_in_background: true` を付けて発行する。対象が複数あれば、1メッセージ内で対象の数だけ同様に発行する。フォアグラウンド(`run_in_background` なし)で呼ぶと、その呼び出しは完了かタイムアウトするまで自分のターンをブロックし、複数対象を同時に投げても全対象の完了を待つバリアになって一番遅い対象に他の全対象が引きずられるため、対象数に関わらず常にバックグラウンドで発行する。
+3. 各バックグラウンド呼び出しは、完了(またはタイムアウト)した対象から順に個別に通知が届く。この呼び出し自体が `timeout` を返しても、指示は届いて実行が始まっていることがある(実際に発生した)。`timeout` を「失敗」と即断しない。
+4. `timeout` の通知を受けた対象は、`herdr agent wait <pane_id> --until idle --timeout <M>` を同じく `run_in_background: true` で発行し直す。これも `timeout` を返すことがある(実際に発生した)。
+5. 完了判定は常に `herdr agent get <pane_id>` が返す `agent_status`(`idle` または `done`)を正とする。`agent prompt` や `agent wait` のタイムアウトエラーではなく、この `agent_status` の値だけを信頼する。
+6. `herdr agent read <pane_id> --source recent-unwrapped --lines 300` で出力を回収し、ターミナルの生ログからユーザーへの回答部分だけを抜粋して提示する。通知が来た対象から順にこの手順を進め、他の対象の完了を待つ必要はない。
+7. ファイル共有フォールバックは使わない。指示先エージェントは別コンテナで動いている可能性があるため、`herdr` スキルに記載されている「一時ディレクトリにMarkdownを書かせて読み返す」手法はこのリポジトリでは使わない。出力が途切れている場合は次のいずれかで対応する。
     - `--lines` を増やして再読する
     - 対象エージェントに「続きを表示して」と再度プロンプトを送る
-7. Claude Codeのサンドボックス下では、`herdr` コマンド呼び出しにサンドボックス無効化(`dangerouslyDisableSandbox`)が必要になることがある。これはHerdrデーモンとUnix socket経由で通信するためで、`Operation not permitted` が出たらこのオプションを付けて再試行する。
+8. Claude Codeのサンドボックス下では、`herdr` コマンド呼び出しにサンドボックス無効化(`dangerouslyDisableSandbox`)が必要になることがある。これはHerdrデーモンとUnix socket経由で通信するためで、`Operation not permitted` が出たらこのオプションを付けて再試行する。
 
 ## 安全なherdrコマンド一覧(正本)
 
