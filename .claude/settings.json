@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(herdr status:*)",
+      "Bash(herdr agent list:*)",
+      "Bash(herdr agent get:*)",
+      "Bash(herdr agent read:*)",
+      "Bash(herdr agent explain:*)",
+      "Bash(herdr agent wait:*)",
+      "Bash(herdr pane list:*)",
+      "Bash(herdr pane current:*)",
+      "Bash(herdr pane read:*)",
+      "Bash(herdr workspace list:*)",
+      "Bash(herdr tab list:*)"
+    ]
+  }
+}

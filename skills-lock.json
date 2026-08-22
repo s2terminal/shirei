@@ -6,6 +6,11 @@
       "sourceType": "github",
       "skillPath": "skills/herdr/SKILL.md",
       "computedHash": "77b9fb624aebcbfccfbc84d7ef3b938c70ecb9198c8bbfee95b11751ba20bfb7"
+    },
+    "shirei-dispatch": {
+      "source": "./skills-src/shirei-dispatch",
+      "sourceType": "local",
+      "computedHash": "5d978e3c89dd6ea50d2815b4d1cf7b0be5d8d67554f1741b74c650d723a89716"
     }
   }
 }
