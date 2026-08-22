@@ -10,7 +10,7 @@
     "shirei-dispatch": {
       "source": "./skills-src/shirei-dispatch",
       "sourceType": "local",
-      "computedHash": "5ede575a17c0a43ef07c60533001facc85ee664d32a0769c0600f738ab7c5704"
+      "computedHash": "afb27e769c4dac356b918c0129c66f4a76f75e5d59193147a824240f9bae976d"
     }
   }
 }
