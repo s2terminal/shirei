@@ -1,6 +1,13 @@
 {
+  "defaultMode": "acceptEdits",
+  "disableAutoMode": "disable",
   "permissions": {
     "allow": [
+      "Bash(cat *)",
+      "WebFetch(domain:docs.claude.com)",
+      "Skill(markdown-writer)",
+      "Bash(mv shirei-backlog/:*)",
+      "Bash(git mv shirei-backlog/:*)",
       "Bash(herdr status:*)",
       "Bash(herdr agent list:*)",
       "Bash(herdr agent get:*)",
@@ -14,6 +21,11 @@
       "Bash(herdr tab list:*)",
       "Bash(herdr --help)",
       "Bash(herdr * --help)"
+    ]
+  },
+  "sandbox": {
+    "excludedCommands": [
+      "herdr *"
     ]
   }
 }
