@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "command(cat)",
+      "read_url(docs.claude.com)",
+      "command(regex:mv shirei-backlog/.*)",
+      "command(regex:git mv shirei-backlog/.*)",
+      "command(herdr status)",
+      "command(herdr agent list)",
+      "command(herdr agent get)",
+      "command(herdr agent read)",
+      "command(herdr agent explain)",
+      "command(herdr agent wait)",
+      "command(herdr pane list)",
+      "command(herdr pane current)",
+      "command(herdr pane read)",
+      "command(herdr workspace list)",
+      "command(herdr tab list)",
+      "command(herdr --help)",
+      "command(regex:herdr \\S+ --help)",
+      "command(regex:herdr \\S+ \\S+ --help)"
+    ]
+  }
+}
